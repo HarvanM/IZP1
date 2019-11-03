@@ -14,21 +14,21 @@ int searchForNumber(char firstChar){
         return 0; //char
     }
 }
-int printContact (int countBufferEntities, char buffer[STRLENGTH][STRLENGTH]){
-    for(int i = 0; i < countBufferEntities; i++){
+int printContact (int entryStringCount, char entries[STRLENGTH][STRLENGTH]){
+    for(int i = 0; i < entryStringCount; i++){
         //when we are on last two strings
-        if(i == (countBufferEntities - 2)){
-            printf("%s,",buffer[i]);
-            printf(" %s\n",buffer[i + 1]);
+        if(i == (entryStringCount - 2)){
+            printf("%s,",entries[i]);
+            printf(" %s\n",entries[i + 1]);
             break;
         }
         else{
-            printf("%s ", buffer[i]);
+            printf("%s ", entries[i]);
         }
     }
     return 0;
 }
-int searchForMatch(char searchedString[STRLENGTH], int countSearchedString, char buffer[STRLENGTH][STRLENGTH], int countBufferEntities){
+int searchForMatch(char searchedString[STRLENGTH], int countSearchedString, char entries[STRLENGTH][STRLENGTH], int entryStringCount){
     const int countLettersByNumbers = 4;
     char lettersByNumbers[10][4] = {
         {'+'}, //0
@@ -45,25 +45,25 @@ int searchForMatch(char searchedString[STRLENGTH], int countSearchedString, char
     
     int searchedChar = 0;
     int isNumber = 0;
-    for (int bufferIndex = 0; bufferIndex < countBufferEntities; bufferIndex++){
+    for (int entryIndex = 0; entryIndex < entryStringCount; entryIndex++){
         int matchCount = 0;
-        int strLenght = strlen(buffer[bufferIndex]);
+        int strLenght = strlen(entries[entryIndex]);
         for (int i = 0; i < strLenght; i++){
+            isNumber = searchForNumber(entries[entryIndex][i]);
             //if current char is character
-            isNumber = searchForNumber(buffer[bufferIndex][i]);
             if (isNumber == 0 || isNumber == 2){
                 //find match for every char represented by searched number
                 for (int j = 0; j < countLettersByNumbers; j++){
                     //convert char number to int
                     searchedChar = searchedString[matchCount] - '0';
-                    if (lettersByNumbers[searchedChar][j] == tolower(buffer[bufferIndex][i])){
-                            matchCount++;
-                    } 
+                    if (lettersByNumbers[searchedChar][j] == tolower(entries[entryIndex][i])){
+                        matchCount++;
+                    }
                 }
             }
             //if current char is number
             if(isNumber == 1){
-                if (searchedString[matchCount] == buffer[bufferIndex][i]){
+                if (searchedString[matchCount] == entries[entryIndex][i]){
                     matchCount++;
                 }
             }
@@ -76,7 +76,7 @@ int searchForMatch(char searchedString[STRLENGTH], int countSearchedString, char
     return -1;
 }
 int main(int argc, char *argv[]){   
-    char buffer[STRLENGTH][STRLENGTH];
+    char entries[STRLENGTH][STRLENGTH];
     char searchedString[STRLENGTH];
     int countsearchedString = 0;
     int countMatchedContacts = 0;
@@ -111,17 +111,17 @@ int main(int argc, char *argv[]){
     int lastWasNumber = 0;
     while(checkForEOF != EOF && correctInput != -1){
         int contactWasFound = 0;
-        int countBufferEntities = 0;
+        int entryStringCount = 0;
         int checkForNumber = 0;
-        //scan contact to buffer
+        //scan contact to entry
         while (checkForNumber == 0 && correctInput != -1){
-            if(countBufferEntities < STRLENGTH){
-                checkForEOF = scanf("%100s", buffer[countBufferEntities]);
-                checkForNumber = searchForNumber(buffer[countBufferEntities][0]);
-                countBufferEntities++;
+            if(entryStringCount < STRLENGTH){
+                checkForEOF = scanf("%100s", entries[entryStringCount]);
+                checkForNumber = searchForNumber(entries[entryStringCount][0]);
+                entryStringCount++;
             }
             //if there are too many inputs per line, break
-            if(countBufferEntities >= STRLENGTH){
+            if(entryStringCount >= STRLENGTH){
                 correctInput = -1;
             }
             //check if input list is correct
@@ -135,12 +135,12 @@ int main(int argc, char *argv[]){
         if (checkForEOF != EOF && correctInput != -1){
             //search for match with argument
             if ((checkForNumber == 1 || checkForNumber == 2) && correctInput == 1 ){
-                contactWasFound = searchForMatch(searchedString, countsearchedString, buffer, countBufferEntities);
+                contactWasFound = searchForMatch(searchedString, countsearchedString, entries, entryStringCount);
                 lastWasNumber = checkForNumber;
             }
             //print matched contact
             if (contactWasFound == 1 || correctInput == 0){
-                printContact(countBufferEntities, buffer);
+                printContact(entryStringCount, entries);
                 countMatchedContacts++;
             }
         }
