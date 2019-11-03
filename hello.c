@@ -12,7 +12,7 @@ int searchForNumber(char firstChar){
 }
 int printContact (int countBufferEntities, char buffer[100][100]){
     for(int i = 0; i < countBufferEntities; i++){
-        //when we are about to print number
+        //when we are on last two strings
         if(i == (countBufferEntities - 2)){
             printf("%s,",buffer[i]);
             printf(" %s\n",buffer[i + 1]);
